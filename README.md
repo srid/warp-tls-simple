@@ -2,6 +2,8 @@
 
 Simple TLS certificate generation and configuration for Warp web server.
 
+This provides a flake-parts module for Nix users as well. See `github:juspay/vira` for an example.
+
 ## Overview
 
 `warp-tls-simple` provides automatic TLS certificate generation and management for [Warp](https://hackage.haskell.org/package/warp) web servers. It simplifies HTTPS setup for development and testing by automatically generating self-signed certificates with proper Subject Alternative Names (SAN) configuration.
