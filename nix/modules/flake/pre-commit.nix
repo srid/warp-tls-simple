@@ -10,12 +10,12 @@
     pre-commit.settings = {
       hooks = {
         nixpkgs-fmt.enable = true;
-        cabal-fmt.enable = true;
         fourmolu = {
           enable = true;
           package = config.fourmolu.wrapper;
         };
         hlint.enable = true;
+        hpack.enable = true;
       };
     };
 
