@@ -56,7 +56,7 @@ in
         # Configure the warp-tls-simple package in the haskell project
         haskellProjects.${cfg.haskellProject} = {
           packages = {
-            warp-tls-simple.source = ./.;
+            warp-tls-simple.source = lib.mkDefault ./.;
           };
           settings = {
             warp-tls-simple = {
