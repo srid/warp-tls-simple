@@ -1,68 +1,71 @@
-cabal-version:      2.4
-name:               warp-tls-simple
-version:            0.1.0.0
-license:            MIT
-copyright:          2022 Sridhar Ratnakumar
-maintainer:         srid@srid.ca
-author:             Sridhar Ratnakumar
-category:           Web
-homepage:           https://srid.ca/warp-tls-simple
+cabal-version: 2.0
 
--- TODO: Before hackage release.
--- A short (one-line) description of the package.
-synopsis:           A template for Haskell projects using Nix
+-- This file has been generated from package.yaml by hpack version 0.37.0.
+--
+-- see: https://github.com/sol/hpack
 
--- A longer description of the package.
--- description:
+name:           warp-tls-simple
+version:        0.1.0.0
+synopsis:       Simple TLS configuration for Warp
+description:    Simplified TLS setup and certificate generation for Warp servers
+category:       Web
+author:         Sridhar Ratnakumar
+maintainer:     srid@srid.ca
+copyright:      2025 Juspay
+license:        MIT
+license-file:   LICENSE
+build-type:     Simple
 
--- A URL where users can report bugs.
--- bug-reports:
-
-extra-source-files:
-  LICENSE
-  README.md
-
-common shared
-  ghc-options:
-    -Wall -Wincomplete-record-updates -Wincomplete-uni-patterns
-    -Wmissing-deriving-strategies -Wunused-foralls -Wunused-foralls
-    -fprint-explicit-foralls -fprint-explicit-kinds -Werror
-
-  mixins:
-    base hiding (Prelude),
-    relude (Relude as Prelude, Relude.Container.One),
-    relude
-
+library
+  exposed-modules:
+      Network.Wai.Handler.WarpTLS.Simple
+  other-modules:
+      Paths_warp_tls_simple
+  autogen-modules:
+      Paths_warp_tls_simple
+  hs-source-dirs:
+      src
   default-extensions:
-    DataKinds
-    DerivingStrategies
-    DerivingVia
-    LambdaCase
-    MultiWayIf
-    NoStarIsType
-    OverloadedStrings
-    StrictData
-    TypeFamilies
-    ViewPatterns
-
+      DataKinds
+      DeriveDataTypeable
+      DeriveGeneric
+      DeriveTraversable
+      DerivingStrategies
+      DerivingVia
+      ExplicitForAll
+      FlexibleContexts
+      FlexibleInstances
+      GeneralizedNewtypeDeriving
+      ImportQualifiedPost
+      LambdaCase
+      MultiParamTypeClasses
+      MultiWayIf
+      NamedFieldPuns
+      NoStarIsType
+      NumericUnderscores
+      OverloadedStrings
+      ScopedTypeVariables
+      StrictData
+      TypeApplications
+      TypeFamilies
+      TypeOperators
+      TypeSynonymInstances
+      ViewPatterns
+  ghc-options: -Wall -optP-Wno-nonportable-include-path -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-deriving-strategies -Wunused-foralls -fprint-explicit-foralls -fprint-explicit-kinds
   build-depends:
-    , aeson
-    , async
-    , base          >=4   && <5
-    , data-default
+      base ==4.*
     , directory
     , filepath
-    , mtl
-    , optics-core
-    , profunctors
-    , relude        >=1.0
-    , shower
-    , time
-    , with-utf8
-
-  hs-source-dirs:     src
-  default-language:   GHC2021
-
-executable warp-tls-simple
-  import:  shared
-  main-is: Main.hs
+    , optparse-applicative
+    , process
+    , relude >=1.0
+    , text
+    , wai
+    , warp
+    , warp-tls
+    , which
+  mixins:
+      base hiding (Prelude)
+    , relude (Relude as Prelude, Relude.Container.One)
+    , relude 
+  default-language: GHC2021
