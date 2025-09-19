@@ -1,9 +1,8 @@
 defaults:
     - local: hpack-common.yaml
-    - local: hpack-relude.yaml
 
 name: warp-tls-simple
-version: 0.1.0.2
+version: 0.1.1.0
 license: MIT
 copyright: 2025 Juspay
 maintainer: srid@srid.ca
@@ -19,7 +18,6 @@ dependencies:
     - which
     - optparse-applicative
     - process
-    - text
     - wai
     - warp
     - warp-tls

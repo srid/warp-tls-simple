@@ -67,6 +67,7 @@ module Network.Wai.Handler.WarpTLS.Simple (
   tlsConfigParser,
 ) where
 
+import Data.List (intercalate)
 import Network.Wai (Application)
 import Network.Wai.Handler.Warp qualified as Warp
 import Network.Wai.Handler.WarpTLS qualified as WarpTLS
@@ -192,7 +193,7 @@ tlsConfigResolve stateDir = \case
 {- | Ensure TLS certificates exist for auto-generation mode
 Returns TLSSettings configured with the certificate and key file paths
 -}
-ensureTLSSettings :: FilePath -> Text -> IO WarpTLS.TLSSettings
+ensureTLSSettings :: FilePath -> String -> IO WarpTLS.TLSSettings
 ensureTLSSettings certDir hostArg = do
   let (certPath, keyPath) = certPaths certDir
 
@@ -201,9 +202,9 @@ ensureTLSSettings certDir hostArg = do
 
   if certExists && keyExists
     then do
-      putTextLn $ "Using existing TLS certificates from " <> toText certDir <> "/"
+      putStrLn $ "Using existing TLS certificates from " ++ certDir ++ "/"
     else do
-      putTextLn "Generating TLS certificates for HTTPS support..."
+      putStrLn "Generating TLS certificates for HTTPS support..."
       createDirectoryIfMissing True certDir
       generateCertificates certDir hostArg
 
@@ -220,19 +221,19 @@ certPaths certDir =
 data CertificateRequest = CertificateRequest
   { certSubject :: CertSubject
   , certValidityDays :: Int
-  , certSANHosts :: [Text] -- Additional SAN hostnames
-  , certSANIPs :: [Text] -- Additional SAN IP addresses
+  , certSANHosts :: [String] -- Additional SAN hostnames
+  , certSANIPs :: [String] -- Additional SAN IP addresses
   }
   deriving stock (Show)
 
 -- | Certificate subject information for self-signed certificates
 data CertSubject = CertSubject
-  { certCountry :: Text
-  , certState :: Text
-  , certLocality :: Text
-  , certOrganization :: Text
-  , certOrganizationalUnit :: Text
-  , certCommonName :: Text
+  { certCountry :: String
+  , certState :: String
+  , certLocality :: String
+  , certOrganization :: String
+  , certOrganizationalUnit :: String
+  , certCommonName :: String
   }
   deriving stock (Show)
 
@@ -249,7 +250,7 @@ defaultCertSubject =
     }
 
 -- | Default certificate request for local development
-defaultCertRequest :: Text -> CertificateRequest
+defaultCertRequest :: String -> CertificateRequest
 defaultCertRequest hostArg =
   CertificateRequest
     { certSubject = defaultCertSubject
@@ -282,7 +283,7 @@ generateCertificateWithRequest certDir request = do
   let opensslConfig = generateOpenSSLConfig request
       configPath = certDir <> "/openssl.conf"
 
-  writeFileText configPath opensslConfig
+  writeFile configPath opensslConfig
 
   -- Generate self-signed certificate
   callProcess
@@ -300,27 +301,27 @@ generateCertificateWithRequest certDir request = do
     , configPath
     ]
 
-  putTextLn "Generated TLS certificates:"
-  putTextLn $ "  Certificate: " <> toText certPath
-  putTextLn $ "  Private key: " <> toText keyPath
-  let hostList = intercalate ", " (map toString request.certSANHosts)
-  putTextLn $ "  Valid for: " <> toText hostList <> " and common local network IPs"
+  putStrLn "Generated TLS certificates:"
+  putStrLn $ "  Certificate: " ++ certPath
+  putStrLn $ "  Private key: " ++ keyPath
+  let hostList = intercalate ", " request.certSANHosts
+  putStrLn $ "  Valid for: " ++ hostList ++ " and common local network IPs"
 
 -- | Generate OpenSSL configuration from a certificate request
-generateOpenSSLConfig :: CertificateRequest -> Text
+generateOpenSSLConfig :: CertificateRequest -> String
 generateOpenSSLConfig request =
   let subject = request.certSubject
       dnsEntries =
         zipWith
-          (\i host -> "DNS." <> Prelude.show i <> " = " <> host)
+          (\i host -> "DNS." ++ Prelude.show i ++ " = " ++ host)
           [(1 :: Int) ..]
           request.certSANHosts
       ipEntries =
         zipWith
-          (\i ip -> "IP." <> Prelude.show i <> " = " <> ip)
+          (\i ip -> "IP." ++ Prelude.show i ++ " = " ++ ip)
           [(length request.certSANHosts + 1 :: Int) ..]
           request.certSANIPs
-      allSANEntries = dnsEntries <> ipEntries
+      allSANEntries = dnsEntries ++ ipEntries
       altNamesSection = unlines $ "[alt_names]" : allSANEntries
    in unlines
         [ "[req]"
@@ -329,12 +330,12 @@ generateOpenSSLConfig request =
         , "prompt = no"
         , ""
         , "[req_distinguished_name]"
-        , "C = " <> subject.certCountry
-        , "ST = " <> subject.certState
-        , "L = " <> subject.certLocality
-        , "O = " <> subject.certOrganization
-        , "OU = " <> subject.certOrganizationalUnit
-        , "CN = " <> subject.certCommonName
+        , "C = " ++ subject.certCountry
+        , "ST = " ++ subject.certState
+        , "L = " ++ subject.certLocality
+        , "O = " ++ subject.certOrganization
+        , "OU = " ++ subject.certOrganizationalUnit
+        , "CN = " ++ subject.certCommonName
         , ""
         , "[v3_req]"
         , "basicConstraints = CA:FALSE"
@@ -346,7 +347,7 @@ generateOpenSSLConfig request =
         ]
 
 -- | Generate self-signed certificates with proper SAN for local network access (simplified API)
-generateCertificates :: FilePath -> Text -> IO ()
+generateCertificates :: FilePath -> String -> IO ()
 generateCertificates certDir hostArg =
   generateCertificateWithRequest certDir (defaultCertRequest hostArg)
 

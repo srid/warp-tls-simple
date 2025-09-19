@@ -9,6 +9,7 @@ ghc-options:
   - -Wincomplete-uni-patterns
   - -Wmissing-deriving-strategies
   - -Wunused-foralls
+  - -Wunused-packages
   - -fprint-explicit-foralls
   - -fprint-explicit-kinds
 
