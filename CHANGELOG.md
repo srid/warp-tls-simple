@@ -2,7 +2,7 @@
 
 ## 0.1.1.0
 
-- Remove `relude` and `text` dependencies
+- Remove `relude` and `text` dependencies.
 
 ## 0.1.0.2
 
